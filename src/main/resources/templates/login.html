@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
+    />
+    <title>Talk-Talk | Login</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <!-- Login page -->
+    <div id="login-page">
+      <div class="entry-page-container">
+        <h1 class="title">Log in to Talk-Talk</h1>
+        <form
+          id="login-form"
+          name="loginForm"
+          th:action="@{/login}"
+          method="POST"
+          onsubmit="saveUserToSession()"
+        >
+          <div class="form-group">
+            <input
+              type="text"
+              id="username"
+              th:placeholder="Username"
+              name="username"
+              autocomplete="off"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              id="passwordLogin"
+              th:placeholder="Password"
+              name="password"
+              autocomplete="off"
+              class="form-control"
+            />
+          </div>
+          <div th:if="${param.error}">
+            <p class="error-message">
+              Username or Password is invalid.
+            </p>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="accent username-submit">
+              Log In
+            </button>
+          </div>
+        </form>
+        <div id="signup-option-wrapper">
+          <p>Don't have an account?</p>
+          <a id="signup-btn" th:href="@{register}" class="link-btn">
+            Sign up
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    function saveUserToSession() {
+      let username = document.querySelector("#username").value;
+      sessionStorage.setItem("username", username);
+    }
+  </script>
+</html>

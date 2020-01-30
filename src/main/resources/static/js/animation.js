@@ -32,24 +32,30 @@ $("#status-options ul li").click(function() {
   $("#status-options").removeClass("active");
 });
 
-function newMessage() {
-  message = $(".message-input input").val();
-  if ($.trim(message) == "") {
+export function newMessage(message) {
+  var messageSender = message.sender;
+  var messageContent = message.content;
+  var liClass = null;
+
+  if ($.trim(messageContent) == "") {
     return false;
   }
+  if (messageSender == sessionStorage.getItem("username")) {
+    liClass = "sent";
+  } else {
+    liClass = "received";
+  }
   $(
-    '<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' +
-      message +
+    '<li class="' +
+      liClass +
+      '"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' +
+      messageContent +
       "</p></li>"
   ).appendTo($(".messages ul"));
   $(".message-input input").val(null);
-  $(".contact.active .preview").html("<span>You: </span>" + message);
+  $(".contact.active .preview").html("<span>You: </span>" + messageContent);
   $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 }
-
-$(".submit").click(function() {
-  newMessage();
-});
 
 $(window).on("keydown", function(e) {
   if (e.which == 13) {
@@ -57,3 +63,7 @@ $(window).on("keydown", function(e) {
     return false;
   }
 });
+
+export function setUsername(username) {
+  $("#username").html(username);
+}

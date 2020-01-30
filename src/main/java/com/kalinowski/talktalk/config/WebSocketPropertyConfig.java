@@ -1,24 +1,17 @@
 package com.kalinowski.talktalk.config;
 
-import com.kalinowski.talktalk.dao.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.context.annotation.*;
-import org.springframework.context.support.*;
+import com.kalinowski.talktalk.dao.WebSocketProperties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
 @PropertySource("classpath:websocket.properties")
 public class WebSocketPropertyConfig {
 
-    @Value("${websocket.stomp.endpoint}")
-    private String stompEndpoint;
-
-    @Value("${websocket.mapping.prefix.message}")
-    private String messageMappingPrefix;
-
-    @Value("${websocket.mapping.prefix.destination}")
-    private String destinationPrefix;
-
-    @Value("${websocket.hostname}")
+    @Value("${websocket.rabbitmq.hostname}")
     private String hostName;
 
     @Value("${websocket.rabbitmq.port}")
@@ -33,9 +26,6 @@ public class WebSocketPropertyConfig {
     @Bean
     public WebSocketProperties webSocketProperties() {
         WebSocketProperties webSocketProperties = new WebSocketProperties();
-        webSocketProperties.setStompEndpoint(stompEndpoint);
-        webSocketProperties.setMessageMappingPrefix(messageMappingPrefix);
-        webSocketProperties.setDestinationPrefix(destinationPrefix);
         webSocketProperties.setHostName(hostName);
         webSocketProperties.setPortNumber(portNumber);
         webSocketProperties.setClientLogin(clientLogin);

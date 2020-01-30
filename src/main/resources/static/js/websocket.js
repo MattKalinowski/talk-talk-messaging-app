@@ -1,75 +1,53 @@
-/*
-The code in this file is responsible for connecting to the WebSocket endpoint and sending & receiving messages.
-*/
-
 "use strict";
 
-var messageInput = $(".message-input input");
-var messageList = $("#message-list");
+import { newMessage, setUsername } from "./animation.js";
+
 var connectingInfo = $("#connecting-info");
 
 var stompClient = null;
 var username = null;
 
-/*
-This function uses SockJS and stomp client to connect to the '/ws' endpoint that is configured in Spring Boot.
-
-Upon successful connection, the client subscribes to /topic/public destination
-and tells the user’s name to the server by sending a message to the /app/chat.addUser destination.
-*/
-function connect() {
+window.onload = function connect() {
   username = sessionStorage.getItem("username");
-  var socket = new SockJS("/ws");
+  setUsername(username);
+  var socket = new SockJS("/talk-talk");
   stompClient = Stomp.over(socket);
   stompClient.connect({}, onConnected, onError);
-}
+};
 
-/*
-The stompClient.subscribe() function takes a callback method which is called whenever a message arrives on the subscribed topic.
-*/
 function onConnected() {
-  // Subscribe to the Public Topic
-  stompClient.subscribe("/topic/public", onMessageReceived);
+  stompClient.subscribe("/user/queue/private-chat", onMessageReceived);
   $(connectingInfo).hide();
 }
 
 function onError(error) {
   connectingInfo.textContent =
     "Could not connect to WebSocket server. Please refresh this page to try again!";
-  connectingInfo.style.color = "red";
 }
 
-/*
-Sending messages.
-*/
 function sendMessage(event) {
-  var messageContent = messageInput.value.trim();
+  var messageContent = $(".message-input input").val();
+  var sendToUsername = $(".contact-profile p").html();
+  /* var destination = "/app/chat.sendMessage." + sendToUsername; */
+  /* var destination = "/user/" + sendToUsername + "/queue/private-chat"; */
+  var destination = "/app/chat";
   if (messageContent && stompClient) {
     var chatMessage = {
       sender: username,
-      content: messageInput.value,
-      type: "CHAT"
+      recipient: sendToUsername,
+      content: messageContent
     };
-    stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
-    messageInput.value = "";
+    stompClient.send(destination, {}, JSON.stringify(chatMessage));
+    messageContent = "";
   }
-  event.preventDefault();
 }
 
-/*
-Displaying sent and received messages.
-*/
+$(".submit").click(function() {
+  sendMessage();
+});
+
 function onMessageReceived(payload) {
+  console.log("TEST on message recived");
   var message = JSON.parse(payload.body);
-
-  var messageElement = document.createElement("li");
-  $(messageElement).addClass("replies");
-
-  var textElement = document.createElement("p");
-  var messageText = document.createTextNode(message.content);
-  textElement.appendChild(messageText);
-
-  messageElement.appendChild(textElement);
-  messageList.appendChild(messageElement);
-  messageList.scrollTop = messageList.scrollHeight;
+  newMessage(message);
 }

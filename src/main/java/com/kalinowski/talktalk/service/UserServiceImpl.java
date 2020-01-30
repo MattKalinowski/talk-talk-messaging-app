@@ -3,8 +3,12 @@ package com.kalinowski.talktalk.service;
 import com.kalinowski.talktalk.model.User;
 import com.kalinowski.talktalk.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -14,6 +18,13 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Override
+    public User findUser(String username) {
+        Optional<User> userOptional = userRepository.findByUserName(username);
+        userOptional.orElseThrow(() -> new UsernameNotFoundException("Not found: " + username));
+        return userOptional.get();
+    }
 
     @Override
     public void saveUser(User user) {
@@ -28,4 +39,13 @@ public class UserServiceImpl implements UserService {
         //TODO: Implement this method.
         return false;
     }
+
+
+
+    @Override
+    public Set<User> getUserContacts(User user) {
+        return null;
+    }
+
+
 }

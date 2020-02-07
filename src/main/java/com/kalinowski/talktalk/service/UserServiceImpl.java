@@ -8,7 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -39,13 +38,5 @@ public class UserServiceImpl implements UserService {
         //TODO: Implement this method.
         return false;
     }
-
-
-
-    @Override
-    public Set<User> getUserContacts(User user) {
-        return null;
-    }
-
 
 }

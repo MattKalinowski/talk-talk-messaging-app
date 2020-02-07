@@ -7,16 +7,16 @@ var connectingInfo = $("#connecting-info");
 var stompClient = null;
 var username = null;
 
-window.onload = function connect() {
+export function connect() {
   username = sessionStorage.getItem("username");
   setUsername(username);
   var socket = new SockJS("/talk-talk");
   stompClient = Stomp.over(socket);
   stompClient.connect({}, onConnected, onError);
-};
+}
 
 function onConnected() {
-  stompClient.subscribe("/user/queue/private-chat", onMessageReceived);
+  stompClient.subscribe("/user/queue/private-messaging", onMessageReceived);
   $(connectingInfo).hide();
 }
 
@@ -27,17 +27,20 @@ function onError(error) {
 
 function sendMessage(event) {
   var messageContent = $(".message-input input").val();
-  var sendToUsername = $(".contact-profile p").html();
-  /* var destination = "/app/chat.sendMessage." + sendToUsername; */
-  /* var destination = "/user/" + sendToUsername + "/queue/private-chat"; */
-  var destination = "/app/chat";
+  /* var conversationId = $("conversation id") <- something like this will be used later*/
+  /* var sendToUsernames = $(".contact-profile p").html();*/
+
+  var sendToUsernames = "Artur";
+  var conversation = 1;
+  var destination = "/app/conversationController";
   if (messageContent && stompClient) {
-    var chatMessage = {
-      sender: username,
-      recipient: sendToUsername,
+    var message = {
+      senderName: username,
+      conversationId: conversation,
+      recipientsString: sendToUsernames,
       content: messageContent
     };
-    stompClient.send(destination, {}, JSON.stringify(chatMessage));
+    stompClient.send(destination, {}, JSON.stringify(message));
     messageContent = "";
   }
 }

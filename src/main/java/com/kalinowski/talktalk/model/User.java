@@ -15,13 +15,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Set;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,14 +44,26 @@ public class User {
     private String profilePictureUrl;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_contact_link",
+    @JoinTable(name = "user_conversation_link",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "connected_user_id"))
-    private Set<User> contacts;
+            inverseJoinColumns = @JoinColumn(name = "conversation_id"))
+    private Set<Conversation> conversations;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_contact_link",
-            joinColumns = @JoinColumn(name = "connected_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> contactOf;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (id != user.id) return false;
+        return userName != null ? userName.equals(user.userName) : user.userName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (userName != null ? userName.hashCode() : 0);
+        return result;
+    }
 }

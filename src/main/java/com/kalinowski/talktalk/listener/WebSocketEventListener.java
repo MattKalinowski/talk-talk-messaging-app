@@ -1,5 +1,6 @@
 package com.kalinowski.talktalk.listener;
 
+import com.kalinowski.talktalk.dto.MessageHolder;
 import com.kalinowski.talktalk.model.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,8 @@ public class WebSocketEventListener {
         if (username != null) {
             log.info("User Disconnected : " + username);
 
-            Message message = new Message();
-            message.setSender(username);
+            MessageHolder message = new MessageHolder();
+            message.setSenderName(username);
 
             messagingTemplate.convertAndSend("/topic/public", message);
         }

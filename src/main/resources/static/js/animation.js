@@ -67,3 +67,32 @@ $(window).on("keydown", function(e) {
 export function setUsername(username) {
   $("#username").html(username);
 }
+
+export function newConversation(conversationBean) {
+  var name = conversationBean.name;
+  var selection = "";
+  var pictureURL = conversationBean.pictureURL;
+  var lastMessage = conversationBean.lastMessage;
+  var lastMessageTime = conversationBean.lastMessageTime;
+  var statusClass = conversationBean.status; //Active (hardcoded)
+
+  $(
+    '<li class="contact ' +
+      selection +
+      '">' +
+      '<div class="wrap">' +
+      '<span class="contact-status ' +
+      statusClass +
+      '"></span>' +
+      '<img src="' +
+      pictureURL +
+      '" alt=""/>' +
+      '<div class="meta"> <p class="name"> ' +
+      name +
+      " </p>" +
+      '<p class="preview"> ' +
+      lastMessage +
+      " </p> </div> </div> </li>"
+  ).appendTo($("#contacts ul"));
+  console.log('<img th:src="@{' + pictureURL + '}" alt=""/>');
+}
